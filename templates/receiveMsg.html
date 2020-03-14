@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    window.onload = function() {
+        if ("WebSocket" in window){
+            alert("瀏覽器有支援websocket");
+            ws = new WebSocket("ws://127.0.0.1:8000/connect/")
+            //連結打開時執行
+            ws.onopen = function() {
+                ws.send("onopentest")
+            };
+            //接收到訊息時執行
+            ws.onmessage = function(listen){
+                var rec_msg = listen.data;
+                alert("收到消息"+rec_msg)
+            };
+            //連結關閉時執行
+            ws.onclose = function(){
+                alert('ws已關閉');
+            };
+        }else{
+            alert("你的瀏覽器不支援websocket");
+        };
+    }
+</script>
+</html>

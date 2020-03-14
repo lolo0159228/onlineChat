@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <title>Title</title>
+</head>
+<body>
+    <input id="msg" placeholder="输入要推送的消息">
+    <button onclick="sendmsg()">推送訊息</button>
+</body>
+<script>
+    function sendmsg(){
+        $.post('/send/', {msg:$("#msg").val()}, function(result){
+            console.log(result)
+        });
+    }
+</script>
+</html>
