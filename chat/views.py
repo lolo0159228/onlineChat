@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse
 from dwebsocket.decorators import accept_websocket
 from django.views.decorators.csrf import csrf_exempt
@@ -5,17 +6,19 @@ import uuid
 
 OnlineUsers = {}
 
-def SendToMsg(request):
-    return render(request,'sendtoMsg.html')
-
-def ReceiveMsg(request):
-    return render(request, 'receiveMsg.html')
-
-def chat(request):
-    return render(request, 'chat.html')
+def entry(request):
+    return render(request, 'entry.html',{'online':len(OnlineUsers)})
 
 @accept_websocket
-def connect(request):
+def chat(request):
+    if request.method == 'POST':
+        global username
+        username = request.POST.get('user')
+        if username in OnlineUsers:
+            return render(request, 'entry.html',{'online':len(OnlineUsers), 'err':'此暱稱已有人使用'})
+        else:
+            return render(request, 'chat.html')
+
     if request.is_websocket():
         userID = str(uuid.uuid1())
         while True:
@@ -24,10 +27,15 @@ def connect(request):
                 break
             else:
                 print('USER連接成功')
-                msg = '新成員->' + userID + '  加入聊天室'
+                msg = '新成員->' + username + '  加入聊天室'
                 for user in OnlineUsers:
                     OnlineUsers[user].send(msg.encode('utf-8'))
-                OnlineUsers[userID] = request.websocket
+                OnlineUsers[username] = request.websocket
+
+# @accept_websocket
+# def connect(request):
+#
+
 
 
 @csrf_exempt

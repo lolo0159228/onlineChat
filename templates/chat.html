@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <title>聊天室</title>
 </head>
@@ -9,22 +11,41 @@
     <div id="area">
         <p>開始聊天</p>
     </div>
-    <input id="msg" placeholder="输入要推送的消息">
-    <button id="btn">推送訊息</button>
+<!--    <input id="msg" placeholder="输入要推送的消息">-->
+    <div id="input" class="align-items-center d-flex justify-content-between">
+        <input id="msg" type="text" placeholder="輸入訊息" class="form-control">
+        <input id="btn" type="button" value="送出" class="form-control ">
+    </div>
 </body>
+<style>
+    #input {
+        background-color: #7498be;
+        position: fixed;
+        bottom:0;
+        width: 100%;
+        height: 60px;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    #btn {
+        white-space: nowrap;
+        width: 5em;
+    }
+</style>
 <script>
     const now = new Date();
 
     window.onload = function() {
         if ("WebSocket" in window){
-            $('#area').append("<p>瀏覽器有支援websocket  "+ now.toLocaleString() +"</p>");
+            //$('#area').append("<p>瀏覽器有支援websocket  "+ now.toLocaleString() +"</p>");
             //使用 WebSocket 的網址向 Server 開啟連結
-            ws = new WebSocket("ws://127.0.0.1:8000/connect/")
+            ws = new WebSocket("ws://"+window.location.host+window.location.pathname)
             $('#area').append("<p>連結成功  "+now.toLocaleString()+"</p>");
             //連結打開時執行
             ws.onopen = function() {
                 ws.send("onopentest")
-                console.log('onOpen')
+                //console.log('onOpen')
             };
             //接收到訊息時執行
             ws.onmessage = function(listen){
@@ -34,7 +55,8 @@
             };
             //連結關閉時執行
             ws.onclose = function(){
-                alert('ws已關閉');
+                //webSocket已關閉
+                alert('連接已斷!');
             };
         }else{
             alert("你的瀏覽器不支援websocket");

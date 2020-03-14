@@ -19,9 +19,10 @@ from chat import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('connect/', views.connect),
+    # path('connect/', views.connect),
     path('send/', views.send),
     # path('sendtomsg/', views.SendToMsg),
     # path('receivemsg/', views.ReceiveMsg),
     path('chat/', views.chat),
+    path('', views.entry),
 ]
