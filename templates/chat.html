@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/css/chat.css">
     <title>聊天室</title>
 </head>
 <body>
     <div id="area">
-        <p>開始聊天</p>
+        <p class="system">開始聊天</p>
     </div>
 <!--    <input id="msg" placeholder="输入要推送的消息">-->
     <div id="input" class="align-items-center d-flex justify-content-between">
@@ -18,40 +19,83 @@
     </div>
 </body>
 <style>
+    body,html{
+        width:100%;
+        height:100%;
+        margin:0;
+        padding:0;
+        background: #f598a8;
+        background: -webkit-linear-gradient(#f598a8, #f6edb2);
+        background: -o-linear-gradient(#f598a8, #f6edb2);
+        background: -moz-linear-gradient(#f598a8, #f6edb2);
+        background: linear-gradient(#f598a8, #f6edb2);
+        background-size:cover;
+    }
+
     #input {
         background-color: #7498be;
-        position: fixed;
+        position: absolute;
         bottom:0;
         width: 100%;
         height: 60px;
         padding-left: 1em;
         padding-right: 1em;
+        box-sizing:border-box;
+        color:#000000;
     }
 
     #btn {
         white-space: nowrap;
         width: 5em;
     }
+
+    .system {
+        text-align: center;
+        color: #000000;
+    }
 </style>
 <script>
     const now = new Date();
-
+    var me;
     window.onload = function() {
         if ("WebSocket" in window){
             //$('#area').append("<p>瀏覽器有支援websocket  "+ now.toLocaleString() +"</p>");
             //使用 WebSocket 的網址向 Server 開啟連結
             ws = new WebSocket("ws://"+window.location.host+window.location.pathname)
-            $('#area').append("<p>連結成功  "+now.toLocaleString()+"</p>");
+            $('#area').append("<p class='system'>連結成功  "+now.toLocaleString()+"</p>");
             //連結打開時執行
             ws.onopen = function() {
-                ws.send("onopentest")
+                ws.send("connected")
                 //console.log('onOpen')
             };
             //接收到訊息時執行
             ws.onmessage = function(listen){
-                var rec_msg = listen.data;
-                console.log(listen)
-                $("#area").append("<p>"+rec_msg+"</p>");
+                var rec_msg = JSON.parse(listen.data);
+                console.log('onmessage')
+                console.log(rec_msg)
+                if (rec_msg.type == 0) {
+                    me = rec_msg.id
+                }else if (rec_msg.type == 1){
+                    $("#area").append("<p class='system'>"+rec_msg.text+"</p>");
+                }else if (rec_msg.type == 2){
+                    if (rec_msg.from == me){
+                        $("#area").append(
+                        "<div style='float:right;'>"+
+                            "<div class='time' style='left:-40;'>"+now.toLocaleTimeString()+"</div>"+
+                            "<div class='me'>"+rec_msg.text+"</div>"+
+                        "</div>")
+                    }else{
+                        var text;
+                        $("#area").append(
+                        "<div>"+
+                            "<div class='time' style='margin-left:5px;'>"+now.toLocaleTimeString()+"</div>"+
+                            "<div class='name'>"+rec_msg.from+"</div>"+
+                            "<div class='other'>"+rec_msg.text+"</div>"+
+                        "</div>")
+                    }
+
+                }
+
             };
             //連結關閉時執行
             ws.onclose = function(){
@@ -69,9 +113,11 @@
             dataType: 'json',
             type: 'POST',
             data:{
+                from: me,
                 msg: $('#msg').val()
             },
             success: function(data){
+                console.log('sendmsg')
                 console.log(data)
                 $('#msg').val('')
             },
