@@ -12,13 +12,13 @@ def entry(request):
 
 @accept_websocket
 def chat(request):
-    if request.method == 'POST':
+    if request.method in ['POST']:
         global username
         username = request.POST.get('user')
         if username in OnlineUsers:
             return render(request, 'entry.html',{'online':len(OnlineUsers), 'err':'此暱稱已有人使用'})
         else:
-            return render(request, 'chat.html')
+            return render(request, 'chat.html', {'online':len(OnlineUsers)})
 
     if request.is_websocket():
         userID = str(uuid.uuid1())

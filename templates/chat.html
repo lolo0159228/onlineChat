@@ -14,49 +14,24 @@
     </div>
 <!--    <input id="msg" placeholder="输入要推送的消息">-->
     <div id="input" class="align-items-center d-flex justify-content-between">
-        <input id="msg" type="text" placeholder="輸入訊息" class="form-control">
+        <input id="msg" type="text" placeholder="輸入訊息" class="form-control" required>
         <input id="btn" type="button" value="送出" class="form-control ">
     </div>
+    <div style="position:absolute; top:2px; right:5px; font-size:12px;">
+        <span>在線人數：</span><span id="online">{{online}}</span>
+    </div>
 </body>
-<style>
-    body,html{
-        width:100%;
-        height:100%;
-        margin:0;
-        padding:0;
-        background: #f598a8;
-        background: -webkit-linear-gradient(#f598a8, #f6edb2);
-        background: -o-linear-gradient(#f598a8, #f6edb2);
-        background: -moz-linear-gradient(#f598a8, #f6edb2);
-        background: linear-gradient(#f598a8, #f6edb2);
-        background-size:cover;
-    }
-
-    #input {
-        background-color: #7498be;
-        position: absolute;
-        bottom:0;
-        width: 100%;
-        height: 60px;
-        padding-left: 1em;
-        padding-right: 1em;
-        box-sizing:border-box;
-        color:#000000;
-    }
-
-    #btn {
-        white-space: nowrap;
-        width: 5em;
-    }
-
-    .system {
-        text-align: center;
-        color: #000000;
-    }
-</style>
 <script>
     const now = new Date();
     var me;
+    var enter = document.getElementById("msg");
+    enter.addEventListener("keyup", function(e){
+        if (e.keyCode === 13){
+            e.preventDefault();
+            document.getElementById("btn").click();
+        }
+    });
+    $("#area").scrollTop($("#area")[0].scrollHeight);
     window.onload = function() {
         if ("WebSocket" in window){
             //$('#area').append("<p>瀏覽器有支援websocket  "+ now.toLocaleString() +"</p>");
@@ -71,26 +46,31 @@
             //接收到訊息時執行
             ws.onmessage = function(listen){
                 var rec_msg = JSON.parse(listen.data);
-                console.log('onmessage')
-                console.log(rec_msg)
+                //type=0 :自己進入 , 1: 新成員進入, 2:有人發送訊息
                 if (rec_msg.type == 0) {
                     me = rec_msg.id
                 }else if (rec_msg.type == 1){
-                    $("#area").append("<p class='system'>"+rec_msg.text+"</p>");
+                    $("#area").append("<div><p class='system'>"+rec_msg.text+"</p></div>");
+                    var num = +$("#online").html() +1;
+                    $("#online").html(num);
                 }else if (rec_msg.type == 2){
                     if (rec_msg.from == me){
                         $("#area").append(
                         "<div style='float:right;'>"+
-                            "<div class='time' style='left:-40;'>"+now.toLocaleTimeString()+"</div>"+
-                            "<div class='me'>"+rec_msg.text+"</div>"+
+                            "<div>"+
+                                "<p class='me'>"+rec_msg.text+"</p>"+
+                                "<p class='time'>"+now.toLocaleTimeString()+"</p>"+
+                            "</div>"+
                         "</div>")
                     }else{
                         var text;
                         $("#area").append(
                         "<div>"+
-                            "<div class='time' style='margin-left:5px;'>"+now.toLocaleTimeString()+"</div>"+
-                            "<div class='name'>"+rec_msg.from+"</div>"+
-                            "<div class='other'>"+rec_msg.text+"</div>"+
+                            "<div>"+
+                                "<p class='name'>"+rec_msg.from+"</p>"+
+                                "<p class='other'>"+rec_msg.text+"</p>"+
+                                "<p class='time' >"+now.toLocaleTimeString()+"</p>"+
+                            "</div>"+
                         "</div>")
                     }
 
@@ -117,8 +97,6 @@
                 msg: $('#msg').val()
             },
             success: function(data){
-                console.log('sendmsg')
-                console.log(data)
                 $('#msg').val('')
             },
             error: function(err){

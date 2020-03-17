@@ -1,3 +1,39 @@
+body,html{
+        width:100%;
+        height:100%;
+        margin:0;
+        padding:0;
+        background: #f598a8;
+        background: -webkit-linear-gradient(#f598a8, #f6edb2);
+        background: -o-linear-gradient(#f598a8, #f6edb2);
+        background: -moz-linear-gradient(#f598a8, #f6edb2);
+        background: linear-gradient(#f598a8, #f6edb2);
+        background-size:cover;
+        font-family:Microsoft JhengHei;
+    }
+
+    #input {
+        background-color: #7498be;
+        position: absolute;
+        bottom:0;
+        width: 100%;
+        height: 60px;
+        padding-left: 1em;
+        padding-right: 1em;
+        box-sizing:border-box;
+        color:#000000;
+    }
+
+    #btn {
+        white-space: nowrap;
+        width: 5em;
+    }
+
+    .system {
+        text-align: center;
+        color: #000000;
+    }
+
 #area{
   position:absolute;
   top:0;
@@ -12,9 +48,8 @@
 
 #area>div{
   position:relative;
-  margin:0 0 20px 0;
+  margin:0 0 10px 0;
   clear:both;
-  height:40px;
 
 }
 
@@ -23,18 +58,16 @@
 }
 
 #area .time{
-  position:absolute;
-  bottom:0px;
   font-size:10px;
-  color:#000;
   color:#777;
+  text-align:left;
 }
 
 #area .name{
-  color:#fff;
-  vertical-align:middle;
-  padding-top:18px;
-  color:#fco;
+  font-size: 10px;
+  color:#eee;
+  margin-bottom: 2px;
+  margin-left: 10px;
 }
 
 #area .me{
@@ -46,20 +79,22 @@
   vertical-align:middle;
   float:right;
   margin-right:10px;
-  word-break:break-all; 
+  word-break:break-all;
+  margin-bottom: 3px;
 
 }
 
 #area .other{
   background:rgba(255,255,255,.8);
   padding:10px;
-  margin-top:15px;
+  /*margin-top:15px;*/
   margin-left:10px;
   border-radius:5px;
   vertical-align:middle;
   float:left;
   margin-left:10px;
   word-break:break-all;
+  margin-bottom: 3px;
 
 }
 
