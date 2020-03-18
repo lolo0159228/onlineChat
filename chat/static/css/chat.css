@@ -65,7 +65,7 @@ body,html{
 
 #area .name{
   font-size: 10px;
-  color:#eee;
+  color:#1b1b1b;
   margin-bottom: 2px;
   margin-left: 10px;
 }
@@ -92,7 +92,7 @@ body,html{
   border-radius:5px;
   vertical-align:middle;
   float:left;
-  margin-left:10px;
+  margin-right:10px;
   word-break:break-all;
   margin-bottom: 3px;
 

@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from dwebsocket.decorators import accept_websocket
 from django.views.decorators.csrf import csrf_exempt
 import uuid
@@ -18,10 +18,10 @@ def chat(request):
         if username in OnlineUsers:
             return render(request, 'entry.html',{'online':len(OnlineUsers), 'err':'此暱稱已有人使用'})
         else:
-            return render(request, 'chat.html', {'online':len(OnlineUsers)})
+            return render(request, 'chat.html', {'online':len(OnlineUsers)+1})
 
     if request.is_websocket():
-        userID = str(uuid.uuid1())
+        # userID = str(uuid.uuid1())
         while True:
             message = request.websocket.wait()
             if not message:
@@ -42,6 +42,9 @@ def chat(request):
                     for user in OnlineUsers:
                         OnlineUsers[user].send(json.dumps(msg).encode('utf-8'))
                     OnlineUsers[username] = request.websocket
+    else:
+        request.websocket.close()
+        return redirect(entry())
 
 @csrf_exempt
 def send(request):

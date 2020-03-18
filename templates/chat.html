@@ -17,27 +17,30 @@
         <input id="msg" type="text" placeholder="輸入訊息" class="form-control" required>
         <input id="btn" type="button" value="送出" class="form-control ">
     </div>
-    <div style="position:absolute; top:2px; right:5px; font-size:12px;">
+    <div style="position:absolute; top:2px; right:5px; font-size:12px; z-index:999;">
+        <button style="border: none; color: blanchedalmond; background:none;" onclick="ws.close()">離開</button>
         <span>在線人數：</span><span id="online">{{online}}</span>
     </div>
 </body>
 <script>
-    const now = new Date();
     var me;
+    var $area = $('#area');
     var enter = document.getElementById("msg");
     enter.addEventListener("keyup", function(e){
         if (e.keyCode === 13){
+            if ($("#msg").val() != "" ){
             e.preventDefault();
             document.getElementById("btn").click();
+            }
         }
     });
-    $("#area").scrollTop($("#area")[0].scrollHeight);
+
     window.onload = function() {
         if ("WebSocket" in window){
-            //$('#area').append("<p>瀏覽器有支援websocket  "+ now.toLocaleString() +"</p>");
+            //$('#area').append("<p>瀏覽器有支援websocket  "+ getTime() +"</p>");
             //使用 WebSocket 的網址向 Server 開啟連結
             ws = new WebSocket("ws://"+window.location.host+window.location.pathname)
-            $('#area').append("<p class='system'>連結成功  "+now.toLocaleString()+"</p>");
+            $('#area').append("<p class='system'>連結成功  "+ getTime() +"</p>");
             //連結打開時執行
             ws.onopen = function() {
                 ws.send("connected")
@@ -59,7 +62,7 @@
                         "<div style='float:right;'>"+
                             "<div>"+
                                 "<p class='me'>"+rec_msg.text+"</p>"+
-                                "<p class='time'>"+now.toLocaleTimeString()+"</p>"+
+                                "<p class='time'>"+ getTime() +"</p>"+
                             "</div>"+
                         "</div>")
                     }else{
@@ -69,18 +72,18 @@
                             "<div>"+
                                 "<p class='name'>"+rec_msg.from+"</p>"+
                                 "<p class='other'>"+rec_msg.text+"</p>"+
-                                "<p class='time' >"+now.toLocaleTimeString()+"</p>"+
+                                "<p class='time' >"+ getTime() +"</p>"+
                             "</div>"+
                         "</div>")
                     }
 
                 }
+                $area.scrollTop($area[0].scrollHeight);
 
             };
             //連結關閉時執行
             ws.onclose = function(){
-                //webSocket已關閉
-                alert('連接已斷!');
+                window.location.assign("/");
             };
         }else{
             alert("你的瀏覽器不支援websocket");
@@ -103,6 +106,15 @@
                 console.log(err)
             }
         });
+    }
+
+    function getTime() {
+        now = new Date();
+        var h = now.getHours().toString();
+        var m = now.getMinutes().toString();
+        var s = now.getSeconds().toString();
+
+        return h+':'+m+':'+s
     }
 
 $(document).ready(function(){
