@@ -25,7 +25,18 @@ def chat(request):
         while True:
             message = request.websocket.wait()
             if not message:
-                break
+                if request.websocket.is_closed():
+                    if request.session.get('user'):
+                        msg = {
+                            'id': request.session['user'],
+                            'text': '成員->' + request.session['user'] + '  離開聊天室',
+                            'type': -1
+                        }
+                        for user in OnlineUsers:
+                            OnlineUsers[user].send(json.dumps(msg).encode('utf-8'))
+                        del OnlineUsers[request.session['user']]
+                    request.websocket.close()
+                    return redirect(entry)
             else:
                 print('USER連接成功')
                 print(message.decode())  #message是bytes type
@@ -37,6 +48,7 @@ def chat(request):
                     }
                     #user第一次進入聊天室
                     request.websocket.send(json.dumps(msg).encode('utf-8'))
+                    request.session['user'] = username
                     #通知所有user有新成員進入
                     msg['type'] = 1
                     for user in OnlineUsers:

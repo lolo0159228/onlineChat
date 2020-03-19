@@ -35,6 +35,10 @@
         }
     });
 
+    window.oninload = function(){
+        ws.close();
+    };
+
     window.onload = function() {
         if ("WebSocket" in window){
             //$('#area').append("<p>瀏覽器有支援websocket  "+ getTime() +"</p>");
@@ -52,9 +56,9 @@
                 //type=0 :自己進入 , 1: 新成員進入, 2:有人發送訊息
                 if (rec_msg.type == 0) {
                     me = rec_msg.id
-                }else if (rec_msg.type == 1){
+                }else if (rec_msg.type == 1 || rec_msg.type == -1){
                     $("#area").append("<div><p class='system'>"+rec_msg.text+"</p></div>");
-                    var num = +$("#online").html() +1;
+                    var num = +$("#online").html() + rec_msg.type;
                     $("#online").html(num);
                 }else if (rec_msg.type == 2){
                     if (rec_msg.from == me){
@@ -82,9 +86,15 @@
 
             };
             //連結關閉時執行
-            ws.onclose = function(){
+            ws.onclose = function(e){
+                console.log(e)
                 window.location.assign("/");
             };
+
+            ws.onerror = function(e){
+                console.log('error:');
+                console.log(e)
+            }
         }else{
             alert("你的瀏覽器不支援websocket");
         };
