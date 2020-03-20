@@ -4,10 +4,10 @@ body,html{
         margin:0;
         padding:0;
         background: #f598a8;
-        background: -webkit-linear-gradient(#f598a8, #f6edb2);
-        background: -o-linear-gradient(#f598a8, #f6edb2);
-        background: -moz-linear-gradient(#f598a8, #f6edb2);
-        background: linear-gradient(#f598a8, #f6edb2);
+        background: -webkit-linear-gradient(#f2f2f2, #f3f3f3);
+        background: -o-linear-gradient(#f2f2f2, #f3f3f3);
+        background: -moz-linear-gradient(#f2f2f2, #f3f3f3);
+        background: linear-gradient(#f2f2f2, #f3f3f3);
         background-size:cover;
         font-family:Microsoft JhengHei;
     }
@@ -31,7 +31,7 @@ body,html{
 
     .system {
         text-align: center;
-        color: #000000;
+        color: #4e4e4e;
     }
 
 #area{
@@ -71,7 +71,7 @@ body,html{
 }
 
 #area .me{
-  background:rgba(255,255,255,.8);
+  background:#fff6b2;
   padding:10px;
   margin-top:15px;
   margin-left:10px;
@@ -85,7 +85,7 @@ body,html{
 }
 
 #area .other{
-  background:rgba(255,255,255,.8);
+  background:#b3d8ff;
   padding:10px;
   /*margin-top:15px;*/
   margin-left:10px;
