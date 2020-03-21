@@ -16,9 +16,9 @@ def chat(request):
         global username
         username = request.POST.get('user')
         if username in OnlineUsers:
-            return render(request, 'entry.html',{'online':len(OnlineUsers), 'err':'此暱稱已有人使用'})
+            return render(request, 'entry.html',{'online':len(OnlineUsers), 'err':'此暱稱已有人使用' })
         else:
-            return render(request, 'chat.html', {'online':len(OnlineUsers)+1})
+            return render(request, 'chat.html', {'online':len(OnlineUsers)+1, 'users':OnlineUsers.keys()})
 
     if request.is_websocket():
         # userID = str(uuid.uuid1())

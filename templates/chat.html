@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/css/chat.css">
-    <title>聊天室</title>
+    <title>TalkTalk</title>
 </head>
 <body>
     <div id="area">
@@ -18,9 +18,35 @@
         <input id="btn" type="button" value="送出" class="form-control ">
     </div>
     <div style="position:absolute; top:2px; right:5px; font-size:12px; z-index:999;">
-        <button style="border: none; color: blanchedalmond; background:none;" onclick="ws.close()">離開</button>
-        <span>在線人數：</span><span id="online">{{online}}</span>
+        <button style="border: none; color: tan; background:none;" onclick="ws.close()">離開</button>
+        <button style="border:none;" data-toggle="modal" data-target="#OnlineModal" id="onlineBtn"><span>在線人數：</span><span id="online">{{online}}</span></button>
     </div>
+
+    <!--OnlineUser Modal -->
+    <div class="modal fade" id="OnlineModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalTitle">線上使用者</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% for u in users %}
+                <p id="{{u}}">{{u}}</p>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            <button type="button" class="btn btn-success">私訊</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 <script>
     var me;
@@ -35,7 +61,7 @@
         }
     });
 
-    window.oninload = function(){
+    window.onunload = function(){
         ws.close();
     };
 
@@ -60,6 +86,12 @@
                     $("#area").append("<div><p class='system'>"+rec_msg.text+"</p></div>");
                     var num = +$("#online").html() + rec_msg.type;
                     $("#online").html(num);
+                    if (rec_msg.type <0){
+                        $('p').remove('#'+rec_msg.id);
+                    }else{
+                        $('.modal-body').append('<p id="'+rec_msg.id+'">'+rec_msg.id+'</p>');
+                    }
+
                 }else if (rec_msg.type == 2){
                     if (rec_msg.from == me){
                         $("#area").append(
@@ -68,7 +100,7 @@
                                 "<p class='me'>"+rec_msg.text+"</p>"+
                                 "<p class='time'>"+ getTime() +"</p>"+
                             "</div>"+
-                        "</div>")
+                        "</div>");
                     }else{
                         var text;
                         $("#area").append(
@@ -131,7 +163,8 @@ $(document).ready(function(){
     $('#btn').click(function(){
         sendmsg();
         $('#msg').val('');
-    })
+    });
+
 })
 
 </script>
